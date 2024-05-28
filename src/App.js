@@ -1,23 +1,25 @@
-import logo from './logo.svg';
-import './App.css';
+import React, { useState } from 'react';
+import axios from 'axios';
 
 function App() {
+  const [code, setCode] = useState('');
+  const [result, setResult] = useState(null);
+
+  const analyzeCode = async () => {
+    try {
+      const response = await axios.post('http://localhost:8000/analyze', { code });
+      setResult(response.data);
+    } catch (error) {
+      console.error('Error analyzing code:', error);
+    }
+  };
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+    <div>
+      <h1>Time Complexity Analyzer</h1>
+      <textarea value={code} onChange={(e) => setCode(e.target.value)} />
+      <button onClick={analyzeCode}>Analyze</button>
+      {result && <div>Result: {result}</div>}
     </div>
   );
 }
